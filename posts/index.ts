@@ -10,7 +10,8 @@ app.use(cors());
 
 type Post = {
 	id: string,
-	title: string
+	title: string,
+	comments?: []
 };
 
 let posts:any = {};
