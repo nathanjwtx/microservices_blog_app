@@ -8,34 +8,21 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-type Post = {
-	id: string,
-	title: string,
-	comments?: []
-};
+let posts = {};
 
-let posts:any = {};
-
-app.get('/posts', (_req: any, res: { send: (arg0: {}) => void; }) => {
+app.get('/posts', (req, res) => {
 	res.send(posts);
 });
 
-app.post('/posts', async (req: { body: { title: string; }; }, res: { status: (arg0: number) => { (): any; new(): any; send: { (arg0: any): void; new(): any; }; }; }) => {
+app.post('/posts', async (req, res) => {
 	const id = randomBytes(4).toString('hex');
+	const title = req.body.title;
 
-	const post = {} as Post;
-	post.id = id;
-	post.title = req.body.title;
-	posts[id] = post;
+	posts[id] = { id, title };
 
-	type Event = {
-		type: string,
-		data: Post
-	};
-
-	let event = {} as Event;
+	let event = {};
 	event.type = 'PostCreated';
-	event.data = post;
+	event.data = posts[id];
 
 	await axios.post('http://localhost:4005/events', event);
 
