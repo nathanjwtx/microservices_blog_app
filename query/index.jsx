@@ -22,10 +22,23 @@ app.post('/events', (req, res) => {
 	}
 
 	if (type === 'CommentCreated') {
-		const { id, content, postId } = data;
+		const { id, content, postId, status } = data;
 
 		const updatedPost = posts[postId];
-		updatedPost.comments.push({id, content});
+		updatedPost.comments.push({id, content, status});
+	}
+
+	if (type === 'CommentUpdated') {
+		const { id, content, postId, status } = data;
+		
+		const post = posts[postId]
+		const comment = post.comments.find(c => {
+			return c.id === id
+		})
+
+		// updating existing item not adding a new one
+		comment.status = status
+		comment.content = content
 	}
 
 	console.log(posts);
@@ -35,5 +48,5 @@ app.post('/events', (req, res) => {
 });
 
 app.listen(4002, () => {
-	console.log('listening on 4002');
+	console.log('Query service listening on 4002');
 });

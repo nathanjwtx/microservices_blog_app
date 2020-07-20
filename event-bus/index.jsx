@@ -8,13 +8,17 @@ app.use(bodyParser.json());
 app.post('/events', (req, res) => {
 	const event = req.body;
 
+	// event-bus sends out the event to all microservices upon receipt
+	// each microservice may or may not do something with it
+
 	axios.post('http://localhost:4000/events', event);
 	axios.post('http://localhost:4001/events', event);
 	axios.post('http://localhost:4002/events', event);
+	axios.post('http://localhost:4003/events', event)
 
 	res.send({ status: 'OK' });
 });
 
 app.listen(4005, () => {
-	console.log('listening on port 4005');
+	console.log('Event-bus listening on port 4005');
 })
